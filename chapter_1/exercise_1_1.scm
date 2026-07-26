@@ -9,20 +9,20 @@
 
 (+ a b (* a b))     ; 19  
 (= a b)             ; #f  
-  
+
 ; 4  
 (if (and (> b a) (< b (* a b)))  
     b  
     a)  
-  
+
 ; 16  
 (cond ((= a 4) 6)  
       ((= b 4) (+ 6 7 a))  
       (else 25))  
-  
+
 ; 6  
 (+ 2 (if (> b a) b a))  
-  
+
 ; 16  
 (* (cond ((> a b) a)  
          ((< a b) b)  
