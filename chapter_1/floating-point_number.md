@@ -135,4 +135,53 @@
 
 6. 溢出/下溢判断。
 
+### 三、浮点数精度与编程注意事项
+- **有限精度问题：** 浮点数在计算机中是离散的、有限的近似表示。很多十进制小数（如0.1, 0.2）无法精确表示为有限位二进制小数。
 
+- **舍入误差累积：** 多次运算可能导致误差累积放大。
+
+- **比较陷阱：** 避免直接使用 == 比较浮点数！应使用 fabs(a - b) < epsilon（一个很小的容差值，如 1e-9）。
+
+- **大数吃小数：** 对阶时，如果两数数量级相差巨大，小数尾数右移后有效位可能全部丢失，加法结果等于大数。
+
+**C语言示例：浮点数的内存表示**
+```cpp
+#include <stdio.h>
+ 
+void printFloatBits(float f) {
+    unsigned int *p = (unsigned int *)&f;
+    unsigned int mask = 1 << 31; // Start from the most significant bit (sign bit)
+ 
+    printf("Binary: ");
+    for (int i = 0; i < 32; i++) {
+        printf("%d", (*p & mask) ? 1 : 0);
+        if (i == 0 || i == 8) printf(" "); // Separate S, E, M
+        mask >>= 1;
+    }
+    printf("\n");
+}
+ 
+int main() {
+    float a = 0.5f;
+    float b = 0.4375f;
+    float c = a + b;
+ 
+    printf("a (0.5):   "); printFloatBits(a);
+    printf("b (0.4375):"); printFloatBits(b);
+    printf("c (0.9375):"); printFloatBits(c);
+    printf("0.1 + 0.2 == 0.3? %s\n", (0.1f + 0.2f == 0.3f) ? "true" : "false"); // 通常输出false!
+ 
+    return 0;
+}
+```
+输出示例：
+```cpp
+a (0.5):   Binary: 0 01111110 00000000000000000000000
+b (0.4375):Binary: 0 01111101 11000000000000000000000
+c (0.9375):Binary: 0 01111110 11100000000000000000000
+0.1 + 0.2 == 0.3? false
+```
+
+————————————————
+版权声明：本文为CSDN博主「xienda」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/xienda/article/details/149634309
