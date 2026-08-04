@@ -80,7 +80,7 @@
   
   如果运气好的话，guess会收敛到一个固定点，在该固定点上，(- (square guess) x)四舍五入的结果正好等于0.0，计算停止。
   
-  如果我们运气不好，guess 在两个相邻浮点数之间来回震荡，x 和(square guess)之间的差值大于0.001，则good-enough?永远不会为真。每一轮：guess = g1 → improve算出趋近g2;guess = g2 → improve 算出趋近g1。程序永远在两个值来回切换，无法进一步逼近。
+  如果我们运气不好，guess 在两个相邻浮点数之间来回震荡，x 和(square guess)之间的差值大于0.001，则good-enough?永远不会为真。每一轮：guess = g1 → improve算出趋近g2；guess = g2 → improve 算出趋近g1。程序永远在两个值来回切换，无法进一步逼近。
   
   提高精度反而0.00000001会使情况变得更糟，因为它会导致 x 的值更小时出现问题。
   
