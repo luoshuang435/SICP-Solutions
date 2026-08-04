@@ -36,12 +36,17 @@
   
   要了解为什么(improve guess x)无法提供更好的结果，我们需要深入了解计算机中浮点数的实际表示方式，并逐步执行(improve 3513641.8288200637 12345678901234)以查看发生了什么。
 
-- ```bash
+  ```bash
   (define (improve guess x)
   (average guess (/ x guess)))
   ```
   
-- asdf
+  ```scheme
+  x           = 12345678901234
+  guess       = 3513641.8288200637
+  (\ x guess) = 3513641.8288200633
+  ```
+  
 - adf
 - adf
 - adf
