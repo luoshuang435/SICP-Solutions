@@ -100,3 +100,60 @@
   当目标数 x 本身很小（如0.00000000123）时，guess 在迭代中很容易就达到一个平方值小于 0.001 的数。此时，(abs (- (square guess) x)) 会小于 0.001，测试通过，但得到的猜测值 guess 可能离真正的平方根差了几个数量级。如果将误差值0.001变少，计算结果会精确些，但对于更少的数字，精度还是不够。
 
 #### 备选策略
+
+第一步是good-enough?基于“初始猜测值与改进后的猜测值之间的差异趋于减小”这一思路重新定义。为此，需要更新good-enough?的定义，计算previous-guess与guess之间的差异，并除以guess，从而得到一个与数值规模无关的相对变化率。
+
+```scheme
+(define (good-enough? previous-guess guess)
+  (< (abs (/ (- guess previous-guess) guess)) 0.00000000001))
+```
+
+这个数字0.00000000001多少有些随意，是通过几次尝试才确定的。接下来我们只需要修改函数sqrt-iter，使其提供正确的参数即可：
+
+```scheme
+(define (sqrt-iter guess x)
+  (if (good-enough? guess (improve guess x))
+      guess
+      (sqrt-iter (improve guess x) x)))
+```
+
+虽然我们可以改进代码以避免重复计算(improve guess x)，但由于书中还没有解释这种方法，所以我在这里不会使用它。
+
+完整的解决方案如下所示：
+
+```scheme
+(define (square x) (* x x))
+
+(define (good-enough? previous-guess guess)
+  (< (abs (/ (- guess previous-guess) guess)) 0.00000000001))
+
+(define (sqrt-iter guess x)
+  (if (good-enough? guess (improve guess x))
+      guess
+      (sqrt-iter (improve guess x) x)))
+
+(define (improve guess x)
+  (average guess (/ x guess)))
+
+(define (average x y)
+  (/ (+ x y) 2))
+
+(define (sqrt x)
+  (sqrt-iter 1.0 x))
+```
+
+值得注意的是，新的计算good-enough?不再依赖于之前的x值。计算会不断迭代，直到无法显著改善结果为止。对于较大的数，如果(improve guess x)返回的值与之前的值相同guess，good-enough?则会返回 #t，于是(- guess previous-guess)此时会变为 0，循环立即结束。
+
+现在我们可以尝试非常大的数：
+
+```scheme
+(sqrt 123456789012345) = 11111111.061111081 ------ Error: 0.015625
+```
+
+以及非常小的数：
+
+```scheme
+(sqrt 0.00000000123456) = 3.51363060095964e-05 ------ Error: 4.1359030627651384e-25
+```
+
+在这两种情况下，误差相对于计算出的数值大小而言都很小。
