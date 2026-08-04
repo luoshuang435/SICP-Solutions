@@ -67,7 +67,13 @@
   由于improve计算的是guess 和 (/ x guess)的平均值，计算机将把这两个数相加并除以 2，但由于无法表示这两个数之间的浮点数，结果将被四舍五入到最接近的浮点数，即，这就解释了为什么无法产生更好的结果。
   
   既然我们已经理解了为什么猜测无法更准确，接下来我们可以看看为什么good-enough?在这种情况下会返回 false。当我们为两个连续浮点数 guess 和 (\ x guess) 计算good-enough?时，会发现：
-- asdf
+- ```scheme
+  (square guess)       = 12345678901234.00195
+  (square (\ x guess)) = 12345678901233.99804
+
+  (abs (- (square guess) x))       = 0.00195 ; > 0.001
+  (abs (- (square (\ x guess)) x)) = 0.00195 ; > 0.001
+  ```
 - asdf
 - asdf
 - asdf
