@@ -127,3 +127,55 @@
 (A 0 32768)
 65536
 ```
+#### 求公式(define (f n) (A 0 n))
+我们先替换A的define中的值：
+```scheme
+(define (A 0 n)
+  (cond ((= n 0) 0)
+        ((= 0 0) (* 2 n))  ; Alway true
+        ((= n 1) 2)        ; never executed because (= 0 0) is alway true
+        (else (A (- 0 1)   ; never executed because (= 0 0) is alway true
+                 (A 0 (- n 1))))))
+```
+然后简化为：
+```scheme
+(define (A 0 n)
+  (* 2 n)))
+```
+由此可见：
+
+$$
+(f\ n)\ computes\ 2n
+$$
+
+#### 求公式(define (g n) (A 1 n))
+我们先替换A的define中的值：
+```scheme
+(define (A 1 n)
+  (cond ((= n 0) 0)
+        ((= 1 0) (* 2 n))   ; Alway false
+        ((= n 1) 2)
+        (else (A (- 1 1)
+                 (A 1 (- n 1))))))
+```
+然后简化为：
+```scheme
+(define (A 1 n)
+  (cond ((= n 0) 0)
+        ((= n 1) 2)
+        (else (A 0 (A 1 (- n 1))))))
+```
+根据前面的练习，我们已经看到(A 0 n)就是(* 2 n)，代码可以进一步简化为：
+```scheme
+(define (A 1 n)
+  (cond ((= n 0) 0)
+        ((= n 1) 2)
+        (else (* 2 (A 1 (- n 1))))))
+```
+如果(A 1 n)是(g n)，那么(A 1 (- n 1))就是(g (-n 1))，这定义了一个数学递归，其中(g n) = (* 2 (g (- n 1))，可以改写为：
+
+$$
+(g\ n)\ computes\ 2^{n}
+$$
+
+因为 $2^0$ = 1， $2^1$ = 2，所以我们不需要在 cond 条件表达式中明确指定其他情况。
