@@ -7,3 +7,10 @@
  1   4   6   4   1
        . . .
 ```
+根据给定的说明，计算给定位置处单个数字的函数可以递归定义：
+```scheme
+(define (pascal row col)
+  (cond ((or (= col 1) (= col row)) 1)
+        (else (+ (pascal (- row 1)  (- col 1))
+                 (pascal (- row 1) col)))))
+```
